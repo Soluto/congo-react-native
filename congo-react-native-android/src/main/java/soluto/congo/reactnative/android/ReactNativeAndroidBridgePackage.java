@@ -5,14 +5,15 @@ import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
-import com.remote.Bridge;
-import com.remote.RemoteCallResponder;
-import com.remote.RpcListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import soluto.congo.core.Bridge;
+import soluto.congo.core.RemoteCallResponder;
+import soluto.congo.core.RpcListener;
 
 public class ReactNativeAndroidBridgePackage implements ReactPackage {
 

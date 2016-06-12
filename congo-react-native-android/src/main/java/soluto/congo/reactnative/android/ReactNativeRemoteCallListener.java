@@ -4,11 +4,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.google.gson.Gson;
-import com.remote.RemoteCall;
-import com.remote.RemoteCallListener;
-
 import rx.Observable;
 import rx.subjects.PublishSubject;
+import soluto.congo.core.RemoteCall;
+import soluto.congo.core.RemoteCallListener;
 
 public final class ReactNativeRemoteCallListener extends ReactContextBaseJavaModule implements RemoteCallListener {
     private PublishSubject<RemoteCall> mRemoteCalls = PublishSubject.create();

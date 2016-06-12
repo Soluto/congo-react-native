@@ -4,9 +4,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.gson.Gson;
-import com.remote.BridgeErrorMessage;
-import com.remote.RemoteCall;
-import com.remote.RemoteCallResponder;
+
+import soluto.congo.core.BridgeErrorMessage;
+import soluto.congo.core.RemoteCall;
+import soluto.congo.core.RemoteCallResponder;
 
 public class ReactNativeRemoteCallResponder implements RemoteCallResponder {
     private ReactContext mReactContext;
