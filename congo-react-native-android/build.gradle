@@ -1,8 +1,18 @@
-group 'soluto'
-version '0.0.1'
-
 apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
 
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
+        classpath 'com.android.tools.build:gradle:1.5.0'
+    }
+}
 
 android {
     compileSdkVersion 23
@@ -27,7 +37,9 @@ android {
 
 repositories {
     jcenter()
-    maven { url "http://solutonexus.soluto.local:8081/nexus/content/repositories/development/" }
+    maven {
+        url "https://dl.bintray.com/soluto/soluto-jars"
+    }
     maven {
         // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
         url "$projectDir/node_modules/react-native/android"
@@ -35,31 +47,33 @@ repositories {
 }
 
 dependencies {
-    compile 'soluto.congo:core:0.0.5'
+    compile 'soluto:congo-core-java:0.0.3'
     compile 'io.reactivex:rxjava:1.1.0'
     compile 'com.google.code.gson:gson:2.4'
     compile 'com.facebook.react:react-native:+'
 }
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            artifact "$buildDir/outputs/aar/$PACKAGE_NAME-release.aar"
+            groupId PACKAGE_GROUP
+            artifactId PACKAGE_NAME
+            version PACKAGE_VERSION
+        }
     }
 }
 
-uploadArchives {
-    apply plugin: 'maven'
-    repositories {
-        mavenDeployer {
-            repository(url: "http://solutonexus.soluto.local:8081/nexus/content/repositories/development/") {
-                authentication(userName: "admin", password: "po09!@QW")
-            }
-            pom.groupId = "soluto"
-            pom.artifactId = 'congo.reactnative.android'
-            pom.version = version
+bintray {
+    user = BINTRAY_USER
+    key = BINTRAY_KEY
+    publications = ['MyPublication']
+    pkg {
+        repo = 'soluto-jars'
+        name = PACKAGE_NAME
+        licenses = ['Apache-2.0']
+        version {
+            name = PACKAGE_VERSION
         }
     }
 }
