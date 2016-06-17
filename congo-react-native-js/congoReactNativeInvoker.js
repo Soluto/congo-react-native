@@ -2,26 +2,32 @@ var Observable = require('rx').Observable;
 var NativeModules = require('react-native').NativeModules;
 var DeviceEventEmitter = require('react-native').DeviceEventEmitter;
 
-module.exports = function(bridgeModuleName) {
+module.exports = function(moduleName, responseChannel) {
     return {
         invoke: function(remoteCall) {
             return Observable.create(function (observer)  {
-                DeviceEventEmitter.addListener("onNext_" + remoteCall.correlationId, function(result) {observer.onNext(JSON.parse(result))});
-                DeviceEventEmitter.addListener("onCompleted_" + remoteCall.correlationId, function() {observer.onCompleted(); removeListeners()});
-                DeviceEventEmitter.addListener("onError_" + remoteCall.correlationId, function(error){observer.onError(JSON.parse(error)); removeListeners()});
+                console.log(responseChannel)
+                DeviceEventEmitter.addListener(responseChannel, function(message) {
+                    var remoteCallResult = JSON.parse(message);
+                    if (remoteCallResult.correlationId !== remoteCall.correlationId) return;
 
-                NativeModules[bridgeModuleName].send(JSON.stringify(remoteCall));
+                    if (remoteCallResult.notification.kind === "OnNext") {
+                        observer.onNext(remoteCallResult.notification.value);
+                    }
+                    if (remoteCallResult.notification.kind === "OnCompleted") {
+                        observer.onCompleted();
+                    }
+                    if (remoteCallResult.notification.kind === "OnError") {
+                        observer.onError(remoteCallResult.notification.error);
+                    }
+                });
+
+                NativeModules[moduleName].send(JSON.stringify(remoteCall));
 
                 return function() {
                     var cancelRemoteCall = Object.assign({}, remoteCall, {isCancelled: true});
-                    NativeModules[bridgeModuleName].send(JSON.stringify(remoteCall));
+                    NativeModules[moduleName].send(JSON.stringify(remoteCall));
                 };
-
-                function removeListeners() {
-                    DeviceEventEmitter.removeAllListeners("onNext_" + remoteCall.correlationId);
-                    DeviceEventEmitter.removeAllListeners("onCompleted_" + remoteCall.correlationId);
-                    DeviceEventEmitter.removeAllListeners("onError_" + remoteCall.correlationId);
-                }
             });
         }
     }

@@ -5,30 +5,28 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.gson.Gson;
 
-import soluto.congo.core.BridgeErrorMessage;
-import soluto.congo.core.RemoteCall;
+import rx.Completable;
+import rx.functions.Action0;
 import soluto.congo.core.RemoteCallResponder;
+import soluto.congo.core.RemoteCallResult;
 
 public class ReactNativeRemoteCallResponder implements RemoteCallResponder {
-    private ReactContext mReactContext;
+    private ReactContext reactContext;
+    private String responseChannel;
 
-    public ReactNativeRemoteCallResponder(ReactApplicationContext reactContext) {
-        mReactContext = reactContext;
+    public ReactNativeRemoteCallResponder(ReactApplicationContext reactContext, String responseChannel) {
+        this.reactContext = reactContext;
+        this.responseChannel = responseChannel;
     }
 
-    public void onNext(RemoteCall remoteCall, Object result) {
-
-        mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit("onNext_" + remoteCall.correlationId, new Gson().toJson(result));
-    }
-
-    public void onCompleted(RemoteCall remoteCall) {
-        mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit("onCompleted_" + remoteCall.correlationId, null);
-    }
-
-    public void onError(RemoteCall remoteCall, Throwable exception) {
-        mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit("onError_" + remoteCall.correlationId,  new Gson().toJson(new BridgeErrorMessage(exception.getMessage())));
+    @Override
+    public Completable respond(final RemoteCallResult remoteCallResult) {
+        return Completable.fromAction(new Action0() {
+            @Override
+            public void call() {
+                reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                        .emit(responseChannel, new Gson().toJson(remoteCallResult));
+            }
+        });
     }
 }

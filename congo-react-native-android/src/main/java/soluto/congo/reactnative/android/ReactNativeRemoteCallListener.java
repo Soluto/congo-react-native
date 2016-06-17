@@ -10,24 +10,24 @@ import soluto.congo.core.RemoteCall;
 import soluto.congo.core.RemoteCallListener;
 
 public final class ReactNativeRemoteCallListener extends ReactContextBaseJavaModule implements RemoteCallListener {
-    private PublishSubject<RemoteCall> mRemoteCalls = PublishSubject.create();
-    private String bridgeName;
+    private PublishSubject<RemoteCall> remoteCalls = PublishSubject.create();
+    private String moduleName;
 
-    public ReactNativeRemoteCallListener(ReactApplicationContext reactContext, String bridgeName) {
+    public ReactNativeRemoteCallListener(ReactApplicationContext reactContext, String moduleName) {
         super(reactContext);
-        this.bridgeName = bridgeName;
+        this.moduleName = moduleName;
     }
 
     @Override
     public String getName() {
-      return bridgeName;
+      return moduleName;
     }
 
     @ReactMethod
     public void send(String serializedRemoteCall) {
         try {
             RemoteCall remoteCall = new Gson().fromJson(serializedRemoteCall, RemoteCall.class);
-            mRemoteCalls.onNext(remoteCall);
+            remoteCalls.onNext(remoteCall);
         }
         catch (Exception ex) {
         }
@@ -35,6 +35,6 @@ public final class ReactNativeRemoteCallListener extends ReactContextBaseJavaMod
 
     @Override
     public Observable<RemoteCall> getRemoteCalls() {
-        return mRemoteCalls;
+        return remoteCalls;
     }
 }

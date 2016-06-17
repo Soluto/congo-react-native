@@ -11,31 +11,34 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import soluto.congo.core.Bridge;
+import soluto.congo.core.ControllerHandler;
 import soluto.congo.core.RemoteCallResponder;
-import soluto.congo.core.RpcListener;
+import soluto.congo.core.Router;
 
 public class ReactNativeAndroidBridgePackage implements ReactPackage {
+    private Map<String, Object> services;
+    private String moduleName;
+    private String responseChannel;
 
-    private Map<String, Object> mServices;
-    private String mBridgeName;
-
-    public ReactNativeAndroidBridgePackage(Map<String, Object> services, String bridgeName) {
-        mServices = services;
-        mBridgeName = bridgeName;
+    public ReactNativeAndroidBridgePackage(Map<String, Object> services, String moduleName, String responseChannel) {
+        this.services = services;
+        this.moduleName = moduleName;
+        this.responseChannel = responseChannel;
     }
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        List<NativeModule> modules = new ArrayList<>();
-        ReactNativeRemoteCallListener remoteCallListener = new ReactNativeRemoteCallListener(reactContext, mBridgeName);
-        modules.add(remoteCallListener);
+        ReactNativeRemoteCallListener listener = new ReactNativeRemoteCallListener(reactContext, moduleName);
+        RemoteCallResponder responder = new ReactNativeRemoteCallResponder(reactContext, responseChannel);
+        Router router = new Router(listener, responder);
 
-        RemoteCallResponder responder = new ReactNativeRemoteCallResponder(reactContext);
-        for (String serviceName: mServices.keySet()) {
-            new Bridge(mServices.get(serviceName), new RpcListener(serviceName, remoteCallListener.getRemoteCalls(), responder)).startListening();
+        for (String serviceName: services.keySet()) {
+            router.use(new ControllerHandler(serviceName, services.get(serviceName)));
         }
 
+        router.listen();
+        List<NativeModule> modules = new ArrayList<>();
+        modules.add(listener);
         return modules;
     }
 
