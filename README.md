@@ -1,5 +1,5 @@
-# Congo PubNub
-[Congo](https://github.com/Soluto/congo-core) transport plugin using [PubNub](https://www.pubnub.com/)
+# Congo React Native
+[Congo](https://github.com/Soluto/congo-core) transport plugin using [React Native](https://facebook.github.io/react-native/) Native Module as the communication layer
 
 ### Implementations
 [Android](https://github.com/Soluto/congo-react-native/tree/master/congo-react-native-android)
