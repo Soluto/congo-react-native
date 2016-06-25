@@ -36,6 +36,6 @@ or use [Congo Proxy](https://github.com/Soluto/congo-proxy)
 Not implemented yet
 
 ### Example
-See real app example in: https://github.com/Soluto/congo-examples/tree/master/pubNubExample
+See real app example in: https://github.com/Soluto/congo-examples/tree/master/reactNativeApp
 
 
