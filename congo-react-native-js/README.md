@@ -8,7 +8,7 @@
 First, create the invoker:
 ```javascript
 var CongoReactNativeInvoker = require("congo-react-native-js").CongoReactNativeInvoker;
-var reactNativeInoker = new CongoReactNativeInvoker("<REQUEST_CHANNEL_NAME>", "<RESPONSE_CHANNEL_NAME>");
+var reactNativeInvoker = new CongoReactNativeInvoker("<REQUEST_CHANNEL_NAME>", "<RESPONSE_CHANNEL_NAME>");
 ```
 Then, use it directly by invoking remote call:
 ```javascript
@@ -18,7 +18,7 @@ var remoteCall = {
     method: "someMethod"
 };
 
-reactNativeInoker.invoke(remoteCall)
+reactNativeInvoker.invoke(remoteCall)
     .doOnNext(function(item) {
         console.log(item);
     })
