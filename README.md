@@ -1,9 +1,7 @@
-## Congo React Native
+# Congo PubNub
+[Congo](https://github.com/Soluto/congo-core) transport plugin using [PubNub](https://www.pubnub.com/)
 
-Transportation plugin for [Congo](https://github.com/Soluto/congo-core) using React Native bridge as the communication layer.
+### Implementations
+[Android](https://github.com/Soluto/congo-react-native/tree/master/congo-react-native-android)
 
-Enables to get live data stream from the device in a React Native application.
-
-### Usage
-
-Soon..
+[JavaScript](https://github.com/Soluto/congo-react-native/tree/master/congo-react-native-js)
